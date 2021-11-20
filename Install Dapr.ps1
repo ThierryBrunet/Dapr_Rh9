@@ -23,11 +23,10 @@ exit
 
 if ($false)
 {
-    Remove-Item -rf /etc/containers/* /var/lib/containers/* /etc/docker /etc/subuid* /etc/subgid*
+    # Remove-Item -rf /etc/containers/* /var/lib/containers/* /etc/docker /etc/subuid* /etc/subgid*
     yum remove buildah skopeo podman containers-common atomic-registries docker
 
     # Remember to delete any users and their associated containers storage:
-
     Remove-Item -rf /home/fatherlinux/.local/share/containers/
 
     # Or:
