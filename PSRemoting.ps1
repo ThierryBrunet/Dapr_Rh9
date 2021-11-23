@@ -1,10 +1,7 @@
 ﻿# Powershell remoting
 
-
-##############
-### Step 1 ### -- Install/Configure Powershell on RH9
-##############
-#region
+########################################
+#region -- Install/Configure Powershell on RH9
 
 ssh rh9wroot
 
@@ -34,11 +31,8 @@ systemctl restart sshd
 
 #endregion
 
-
-##############
-### Step 2 ### -- Test remotong
-##############
-#region
+########################################
+#region -- Test remoting
 
 $s = New-PSSession -HostName 172.17.195.137 -KeyFilePath ~/.ssh/id_rsa_redhat9 -UserName root
 $s

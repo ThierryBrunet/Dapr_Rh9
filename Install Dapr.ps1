@@ -1,9 +1,5 @@
-﻿
-
-##############
-### Step 1 ### -- Transition from Docker CLI to the Podman CLI
-##############
-#region
+﻿########################################
+#region -- Transition from Docker CLI to the Podman CLI
 # One of Podman's greatest advantages is its complete CLI compatibility with Docker.
 # In fact, when building Podman, Docker users can adapt without any significant changes.
 # For example, you can use the alias command to create a docker alias for Podman:
@@ -16,8 +12,8 @@ docker --version
 exit
 #endregion
 
-
-# Complete Podman Uninstall/Re-install
+########################################
+#region -- Complete Podman Uninstall/Re-install
 # ------------------------------------
 # Sometimes it’s necessary to uninstall completely, and reinstall when testing software.
 
@@ -35,9 +31,10 @@ if ($false)
     # Fresh Install
     yum install podman buildah skopeo
 }
+#endregion
 
-
-# Install Docker Engine on RHEL
+########################################
+#region -- Install Docker Engine on RHEL
 # ----------------------------
 # https://docs.docker.com/engine/install/rhel/
 
@@ -171,35 +168,40 @@ docker run hello-world
 
 #endregion
 
-
-##############
-### Step 2 ### -- Enter PS Remoting as root
-##############
-#region
+########################################
+#region -- Enter PS Remoting as root
 Enter-PSSession -HostName 172.17.195.137 -KeyFilePath ~/.ssh/id_rsa_redhat9 -UserName root
 #endregion
 
-
-##############
-### Step 3 ### -- Install Dapr CLI
-##############
-#region
+########################################
+#region -- Install Dapr CLI  (Linux Automatic)
 wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
 dapr
 #endregion
 
+########################################
+#region -- Install Dapr CLI  (Linux Manual)
+# Download the desired Dapr CLI from the latest Dapr Release -- https://github.com/dapr/cli/releases
+# --> dapr_linux_amd64.tar.gz
+cd ~/thierry
 
-##############
-### Step 3 ### -- Initialize Dapr
-##############
-#region
+# copy package using winSCP : dapr_linux_amd64.tar.gz
+tar xvzf dapr_linux_amd64.tar.gz
 
-# Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
-Get-ChildItem /etc/containers
-New-Item -Path /etc/containers/nodocker -ItemType file
+# --> will create a single executabel "dapr"
 
+# Move it to
+mv  dapr /usr/local/bin
 
-# Initialize Dapr
+# Run it
+dapr
+dapr --version
+
+#endregion
+
+########################################
+#region -- Initialize Dapr
+
 dapr init
 
 # [root@rh9w ~]# dapr init

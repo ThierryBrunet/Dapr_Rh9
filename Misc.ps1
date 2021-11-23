@@ -126,7 +126,7 @@ Hello World!
 #endregion
 
 ########################################
-#region -- RH repositiries
+#region -- RH repositories
 rhel-9-for-x86_64-appstream-beta-rpms
 
 #endregion
@@ -285,9 +285,19 @@ redis conf is here: # Warning: no config file specified, using the default confi
 https://dl-cdn.alpinelinux.org/alpine/v3.14/main/x86_64/APKINDEX.tar.gz
 https://dl-cdn.alpinelinux.org/alpine/v3.14/community/x86_64/APKINDEX.tar.gz
 
+docker system df
+docker images
 
-
-
+	# redis-server                      latest          3fb58dc24c3e   2 hours ago   32.4MB
+	# aspnetapp                         latest          29b6e5e2d3cd   5 hours ago   216MB
+	# <none>                            <none>          69f019bb7e57   5 hours ago   740MB
+	# redis                             latest          40c68ed3a4d2   3 days ago    113MB
+	# mcr.microsoft.com/dotnet/sdk      6.0             903b367ed1c5   4 days ago    715MB
+	# mcr.microsoft.com/dotnet/aspnet   6.0             65a2d4725c72   4 days ago    207MB
+	# debian                            bullseye-slim   66b2aecdb9f0   4 days ago    80.4MB
+	# openzipkin/zipkin                 latest          dd8f7d2eeb7d   4 days ago    153MB
+	# alpine                            latest          0a97eee8041e   8 days ago    5.61MB
+	# daprio/dapr                       1.5.0           bff1855a0302   9 days ago    214MB
 
 #endregion
 
@@ -323,6 +333,7 @@ docker build -t thierry/redis-cli . --build-arg REDIS_VERSION=6.2.6
 docker run --rm --name redis-cli -it thierry/redis-cli redis-cli -h hostname -p 6379 ping
 
 #endregion
+
 ########################################
 #region -- Build REDIS docker image
 
@@ -377,7 +388,6 @@ $ docker image ls
 
 
 #endregion
-
 
 ########################################
 #region -- Transition from Docker CLI to the Podman CLI
@@ -486,7 +496,6 @@ docker run --rm dotnetapp:alpine
 
 #endregion
 
-
 ########################################
 #region -- Alpine Linux
 
@@ -498,7 +507,6 @@ https://dl-cdn.alpinelinux.org/alpine/v3.14/releases/x86_64/alpine-minirootfs-3.
 
 #endregion
 
-
 ########################################
 #region -- CoreOS Fedora Linux
 
@@ -506,6 +514,64 @@ https://getfedora.org/coreos?stream=stable
 
 https://console.cloud.google.com/marketplace/product/fedora-coreos-cloud/fedora-coreos-stable?pli=1
 
+
+#endregion
+
+########################################
+#region -- Saving Images and Containers as Tar Files for Sharing
+
+# The docker export - Export a container’s filesystem as a tar archive
+# The docker import - Import the contents from a tarball to create a filesystem image
+# The docker save - Save one or more images to a tar archive (streamed to STDOUT by default)
+# The docker load - Load an image from a tar archive or STDIN
+
+
+docker export df2 > nginx.tar
+docker import - mynginx < nginx.tar
+
+docker save -o mynginx1.tar nginx
+docker load < mynginx1.tar
+
+docker tag 4e1a2b349b09 thierry/nginx:thierry
+
+#endregion
+
+########################################
+#region -- openzipkin/zipkin
+https://github.com/openzipkin/zipkin/
+https://github.com/openzipkin/zipkin/blob/master/docker/Dockerfile
+
+#endregion
+
+########################################
+#region -- daprio/dapr:
+
+docker pull daprio/dapr:1.5.0
+
+#endregion
+
+########################################
+#region --dockerfiles to build Dapr release
+
+
+https://github.com/dapr/dapr/tree/master/docker
+
+# This includes dockerfiles to build Dapr release and debug images and development container images for go dev environment.
+
+# Dockerfile: Dapr Release Image
+# Dockerfile-debug: Dapr Debug Image - WIP
+# Dockerfile-dev: Development container image which VSCode Dev container can use.
+
+# https://github.com/dapr/dapr/blob/master/docker/Dockerfile
+FROM alpine:latest as alpine
+RUN apk add -U --no-cache ca-certificates
+# current directory must be ./dist
+
+FROM gcr.io/distroless/static:nonroot
+ARG PKG_FILES
+WORKDIR /
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY /$PKG_FILES /
 
 #endregion
 
